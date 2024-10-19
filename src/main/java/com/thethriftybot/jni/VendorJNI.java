@@ -1,4 +1,4 @@
-package com.vendor.jni;
+package com.thethriftybot.jni;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
