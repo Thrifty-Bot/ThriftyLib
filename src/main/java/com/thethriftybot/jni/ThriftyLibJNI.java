@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Demo class for loading the driver via JNI.
  */
-public class VendorJNI {
+public class ThriftyLibJNI {
   static boolean libraryLoaded = false;
 
   /**
@@ -33,7 +33,7 @@ public class VendorJNI {
 
   static {
     if (Helper.getExtractOnStaticLoad()) {
-      System.loadLibrary("VendorDriver");
+      System.loadLibrary("ThriftyLib");
       libraryLoaded = true;
     }
   }
@@ -45,7 +45,7 @@ public class VendorJNI {
     if (libraryLoaded) {
       return;
     }
-    System.loadLibrary("VendorDriver");
+    System.loadLibrary("ThriftyLib");
     libraryLoaded = true;
   }
 

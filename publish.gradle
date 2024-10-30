@@ -2,11 +2,14 @@ apply plugin: 'maven-publish'
 
 ext.licenseFile = files("$rootDir/LICENSE.txt")
 
-def pubVersion = '0.0.1'
+def pubVersion = '0.9.3'
 
 def outputsFolder = file("$buildDir/outputs")
 
 def versionFile = file("$outputsFolder/version.txt")
+
+def artifactGroupId = 'com.thethriftybot.frc'
+def baseArtifactId = 'ThriftyLib'
 
 task outputVersions() {
     description = 'Prints the versions of wpilib to a file for use by the downstream packaging project'
@@ -42,8 +45,6 @@ ext.addTaskToCopyAllOutputs = { task ->
     copyAllOutputs.from task.archiveFile
 }
 
-def artifactGroupId = 'com.vendor.frc'
-def baseArtifactId = 'Vendor'
 def driverZipBaseName = "_GROUP_com_vendor_frc_ID_${baseArtifactId}-driver_CLS"
 // def zipBaseName = "_GROUP_com_vendor_frc_ID_${baseArtifactId}-cpp_CLS"
 def javaBaseName = "_GROUP_com_vendor_frc_ID_${baseArtifactId}-java_CLS"
@@ -147,20 +148,7 @@ libraryBuild.dependsOn build
 
 def releasesRepoUrl = "$buildDir/repos/releases"
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-}
 
-repositories {
-    maven {
-        url "https://jitpack.io"
-        credentials { username authToken }
-    }
-}
 
 task cleanReleaseRepo(type: Delete) {
     delete releasesRepoUrl
@@ -170,41 +158,26 @@ tasks.matching {it != cleanReleaseRepo}.all {it.dependsOn cleanReleaseRepo}
 
 model {
     publishing {
-        // def taskList = createComponentZipTasks($.components, ['Vendor'], zipBaseName, Zip, project, includeStandardZipFormat)
-
-        // def driverTaskList = createComponentZipTasks($.components, ['VendorDriver'], driverZipBaseName, Zip, project, includeStandardZipFormat)
-
         publications {
-            // cpp(MavenPublication) {
-            //     taskList.each {
-            //         artifact it
-            //     }
-            //     artifact cppHeadersZip
-            //     artifact cppSourceZip
-
-            //     artifactId = "${baseArtifactId}-cpp"
-            //     groupId artifactGroupId
-            //     version pubVersion
-            // }
-            // driver(MavenPublication) {
-            //     driverTaskList.each {
-            //         artifact it
-            //     }
-            //     artifact cppDriverHeadersZip
-
-            //     artifactId = "${baseArtifactId}-driver"
-            //     groupId artifactGroupId
-            //     version pubVersion
-            // }
-
-            java(MavenPublication) {
-                artifact jar
+            maven(MavenPublication) {
+                groupId = artifactGroupId
+                artifactId = "${baseArtifactId}-java"
+                version = pubVersion
                 artifact sourcesJar
                 artifact javadocJar
-
-                artifactId = "${baseArtifactId}-java"
-                groupId artifactGroupId
-                version pubVersion
+                artifact jar
+                pom {
+                    name = 'ThriftyLib'
+                    description = 'ThriftyLib for FRC'
+                    packaging = 'jar'
+                }
+            }
+        }
+        
+        repositories {
+            maven {
+                name = 'localRepo'
+                url = "$buildDir/maven-repo"
             }
         }
     }

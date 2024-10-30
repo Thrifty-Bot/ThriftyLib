@@ -6,7 +6,11 @@ plugins {
   id 'edu.wpi.first.NativeUtils' version '2024.7.2'
   id 'edu.wpi.first.GradleJni' version '1.1.0'
   id 'edu.wpi.first.GradleVsCode' version '2.1.0'
-  id 'maven-publish'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -42,7 +46,7 @@ dependencies {
 nativeUtils {
   exportsConfigs {
     // Main library is just default empty. This will export everything
-    Vendor {
+    ThriftyLib {
     }
   }
   privateExportsConfigs {
@@ -123,6 +127,9 @@ nativeUtils {
 //     }
 //   }
 // }
+
+group = 'com.thethriftybot.frc'
+version = '0.9.3'
 
 apply from: 'publish.gradle'
 
